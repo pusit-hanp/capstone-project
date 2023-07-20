@@ -55,17 +55,59 @@ if (process.env.NODE_ENV === 'production') {
 // Serve static files from the "images" directory
 //app.use('/images', express.static(path.join(__dirname, '../public/images')));
 
-const upload = multer({ dest: 'public/images/raws' });
-app.post(
-  '/test_upload',
-  upload.single('product_image'),
-  function (req, res, next) {
-    console.log(req.file);
-    // req.file is the `avatar` file
-    // req.body will hold the text fields, if there were any
-    res.status(200);
+//const upload = multer({ dest: path.join(__dirname, 'public/images/raws') });
+
+// const upload = multer({ dest: 'public/images/raws' });
+// app.post(
+//   '/test_upload',
+//   upload.single('product_image'),
+//   function (req, res, next) {
+//     console.log(req.file);
+//     // req.file is the `avatar` file
+//     // req.body will hold the text fields, if there were any
+//     res.status(200);
+//   }
+// );
+
+/////////////////////////////////////////////////////////////////
+// Multer configuration
+// FINE
+// const storage = multer.diskStorage({
+//   destination: 'public/images/raws',
+//   filename: function (req, file, cb) {
+//     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+//     cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+//   },
+// });
+
+const storage = multer.diskStorage({
+  destination: path.resolve('public/images/raws'), // Use path.resolve() to create an absolute path
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9).toString().padStart(9, '0');
+    cb(null, 'Original' + '-' + file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({ storage: storage });
+
+app.use(express.json());
+
+app.post('/test_upload', upload.single('imageFile'), function (req, res, next) {
+  try {
+    console.log(req.file); // Check if the file details are logged correctly
+    console.log(req.body); // Check other form fields
+    res.sendStatus(200);
+  } catch (error) {
+    console.error('Error handling image upload:', error.message);
+    res.sendStatus(500);
   }
-);
+});
+
+
+/////////////////////////////////////////////////////////////////
+
+
+
 
 app.post('/payment/create-checkout-session', async (req, res) => {
   const { product } = req.body;
