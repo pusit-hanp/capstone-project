@@ -13,7 +13,7 @@ import ImageUpload from './pages/ImageUpload';
 import LikedImage from './pages/LikedImage';
 import Cancel from './pages/Cancel';
 import Success from './pages/Success';
-import CustomImageField from './pages/CustomImageField';
+
 
 function App() {
   return (
@@ -28,7 +28,6 @@ function App() {
               <Route path="liked" element={<LikedImage />} />
               <Route path="cart" element={<Cart />} />
               <Route path="profile" element={<Profile />} />
-              <Route path="CustomImageField" element={<CustomImageField />} />
               <Route path="/ImageUpload" element={<ImageUpload />} />
               <Route path="/success" element={<Success />} />
               <Route path="/cancel" element={<Cancel />} />

@@ -9,8 +9,13 @@ import '../styles/ImageUpload.css';
 const CustomImageField = ({ field, form: { touched, errors }, ...props }) => {
   return (
       <div>
-        <input type="file" accept="image/*" id={field.name} {...field} {...props} style={{ padding: '10px' }} />
-        {touched[field.name] && errors[field.name] && <div className="error">{errors[field.name]}</div>}
+        <input
+            type="file"
+            accept="image/*"
+            id={field.name} {...field} {...props}
+            style={{ padding: '10px' }} />
+        {touched[field.name] && errors[field.name] &&
+            <div className="error">{errors[field.name]}</div>}
       </div>
   );
 };
