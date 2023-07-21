@@ -52,20 +52,67 @@ if (process.env.NODE_ENV === 'production') {
     res.sendFile(path.join(__dirname, 'client/build/index.html'));
   });
 }
-// Serve static files from the "images" directory
-//app.use('/images', express.static(path.join(__dirname, '../public/images')));
 
-const upload = multer({ dest: 'public/images/raws' });
-app.post(
-  '/test_upload',
-  upload.single('product_image'),
-  function (req, res, next) {
-    console.log(req.file);
-    // req.file is the `avatar` file
-    // req.body will hold the text fields, if there were any
-    res.status(200);
+
+const storage = multer.diskStorage({
+  destination: path.resolve('public/images/raws'), // Use path.resolve() to create an absolute path
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9).toString().padStart(9, '0');
+    cb(null, 'Original' + '-' + file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({ storage: storage });
+
+app.use(express.json());
+
+// app.post('/test_upload', upload.single('imageFile'), function (req, res, next) {
+//   try {
+//     console.log(req.file); // Check if the file details are logged correctly
+//     console.log(req.body); // Check other form fields
+//     res.sendStatus(200);
+//   } catch (error) {
+//     console.error('Error handling image upload:', error.message);
+//     res.sendStatus(500);
+//   }
+// });
+
+
+/////////////////////////////////////////////////////////////////
+app.post('/test_upload', upload.single('imageFile'), async function (req, res, next) {
+  try {
+    console.log(req.file); // Check if the file details are logged correctly
+    console.log(req.body); // Check other form fields
+
+    // Save image details to MongoDB
+    const imageDetails = {
+      title: req.body.title,
+      description: req.body.description,
+      seller: '', // Seller information here
+      likes: 0, // Initialize the likes to 0
+      views: 0, // Initialize the views to 0
+      status: 'Available', // Assuming the default status is 'Available'
+      // imageLocation: req.file.path, // Using absolute path
+      imageLocation: `./images/raws/${req.file.filename}`, // Using relative path
+
+      dateCreated: new Date(),
+      dateEdited: new Date(),
+      tags: req.body.tags.split(','), // Convert tags string to an array
+      price: parseFloat(req.body.price), // Convert price string to a floating-point number
+    };
+
+    // Save the image details to the 'images' collection in MongoDB
+    await db.collection('images').insertOne(imageDetails);
+
+    res.sendStatus(200);
+  } catch (error) {
+    console.error('Error handling image upload:', error.message);
+    res.sendStatus(500);
   }
-);
+});
+/////////////////////////////////////////////////////////////////
+
+
 
 app.post('/payment/create-checkout-session', async (req, res) => {
   const { product } = req.body;

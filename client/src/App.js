@@ -13,32 +13,31 @@ import ImageUpload from './pages/ImageUpload';
 import LikedImage from './pages/LikedImage';
 import Cancel from './pages/Cancel';
 import Success from './pages/Success';
-import ReactUploadImage from './pages/test';
+
 
 function App() {
   return (
-    <>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/test" element={<ReactUploadImage />} />
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Home />} />
-            <Route path="about" element={<About />} />
-            <Route path="contact" element={<Contact />} />
-            <Route path="image/:imageId" element={<ImageInformation />} />
-            <Route path="liked" element={<LikedImage />} />
-            <Route path="cart" element={<Cart />} />
-            <Route path="profile" element={<Profile />} />
-            <Route path="image/imageUpload" element={<ImageUpload />} />
-            <Route path="/success" element={<Success />} />
-            <Route path="/cancel" element={<Cancel />} />
-          </Route>
-          <Route path="login" element={<Login />} />
+      <>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route index element={<Home />} />
+              <Route path="about" element={<About />} />
+              <Route path="contact" element={<Contact />} />
+              <Route path="image/:imageId" element={<ImageInformation />} />
+              <Route path="liked" element={<LikedImage />} />
+              <Route path="cart" element={<Cart />} />
+              <Route path="profile" element={<Profile />} />
+              <Route path="/ImageUpload" element={<ImageUpload />} />
+              <Route path="/success" element={<Success />} />
+              <Route path="/cancel" element={<Cancel />} />
+            </Route>
+            <Route path="login" element={<Login />} />
 
-          <Route path="register" element={<Register />} />
-        </Routes>
-      </BrowserRouter>
-    </>
+            <Route path="register" element={<Register />} />
+          </Routes>
+        </BrowserRouter>
+      </>
   );
 }
 
